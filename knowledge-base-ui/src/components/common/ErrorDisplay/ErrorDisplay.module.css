@@ -1,0 +1,71 @@
+﻿.errorContainer {
+  display: flex;
+  gap: 16px;
+  padding: 16px;
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  border-left: 4px solid #ef4444;
+  border-radius: 4px;
+  margin: 16px 0;
+}
+
+.errorIcon {
+  font-size: 24px;
+}
+
+.errorContent {
+  flex: 1;
+}
+
+.errorTitle {
+  margin: 0 0 8px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #991b1b;
+}
+
+.errorCode {
+  font-weight: 400;
+  font-size: 14px;
+  color: #7f1d1d;
+}
+
+.errorMessage {
+  margin: 0 0 12px;
+  font-size: 14px;
+  color: #b91c1c;
+}
+
+.errorActions {
+  display: flex;
+  gap: 8px;
+}
+
+.retryButton,
+.dismissButton {
+  padding: 6px 12px;
+  font-size: 13px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.retryButton {
+  background-color: #ef4444;
+  border: none;
+  color: white;
+}
+
+.retryButton:hover {
+  background-color: #dc2626;
+}
+
+.dismissButton {
+  background-color: transparent;
+  border: 1px solid #fca5a5;
+  color: #b91c1c;
+}
+
+.dismissButton:hover {
+  background-color: #fee2e2;
+}

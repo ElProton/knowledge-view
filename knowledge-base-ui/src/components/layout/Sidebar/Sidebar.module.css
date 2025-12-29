@@ -1,0 +1,106 @@
+﻿.sidebar {
+  width: 240px;
+  height: 100vh;
+  background-color: #1a1a2e;
+  color: #eaeaea;
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  left: 0;
+  top: 0;
+}
+
+.logo {
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-bottom: 1px solid #2a2a4a;
+}
+
+.logoIcon {
+  font-size: 24px;
+}
+
+.logoText {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.nav {
+  flex: 1;
+  padding: 16px 0;
+  overflow-y: auto;
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 20px;
+  color: #b0b0c0;
+  text-decoration: none;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.navItem:hover {
+  background-color: #2a2a4a;
+  color: #ffffff;
+}
+
+.navItem.active {
+  background-color: #3a3a6a;
+  color: #ffffff;
+  border-left: 3px solid #6366f1;
+}
+
+.navIcon {
+  font-size: 18px;
+}
+
+.navLabel {
+  font-size: 14px;
+}
+
+.userSection {
+  padding: 16px;
+  border-top: 1px solid #2a2a4a;
+}
+
+.userInfo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.userAvatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+}
+
+.userName {
+  font-size: 13px;
+  color: #b0b0c0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.logoutButton {
+  width: 100%;
+  padding: 8px;
+  background-color: transparent;
+  border: 1px solid #4a4a6a;
+  color: #b0b0c0;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.logoutButton:hover {
+  background-color: #4a4a6a;
+  color: #ffffff;
+}

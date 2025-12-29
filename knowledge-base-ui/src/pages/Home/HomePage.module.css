@@ -1,0 +1,121 @@
+﻿.homePage {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.header {
+  margin-bottom: 40px;
+}
+
+.title {
+  margin: 0 0 8px;
+  font-size: 32px;
+  font-weight: 600;
+  color: #1a1a2e;
+}
+
+.subtitle {
+  margin: 0;
+  font-size: 16px;
+  color: #666;
+}
+
+.sectionTitle {
+  margin: 0 0 20px;
+  font-size: 20px;
+  font-weight: 600;
+  color: #1a1a2e;
+}
+
+.sectionsOverview {
+  margin-bottom: 40px;
+}
+
+.sectionsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.sectionCard {
+  display: block;
+  padding: 24px;
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.sectionCard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.sectionIcon {
+  font-size: 32px;
+  display: block;
+  margin-bottom: 12px;
+}
+
+.sectionName {
+  margin: 0 0 8px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #1a1a2e;
+}
+
+.sectionDescription {
+  margin: 0;
+  font-size: 14px;
+  color: #666;
+  line-height: 1.5;
+}
+
+.emptyState {
+  padding: 40px;
+  background-color: #ffffff;
+  border: 1px dashed #d0d0d0;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.emptyMessage {
+  margin: 0 0 8px;
+  font-size: 16px;
+  color: #666;
+}
+
+.emptyHint {
+  margin: 0;
+  font-size: 14px;
+  color: #999;
+}
+
+.infoSection {
+  padding: 24px;
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+}
+
+.infoText {
+  margin: 0 0 16px;
+  font-size: 14px;
+  color: #666;
+}
+
+.infoList {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.infoList li {
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #666;
+}
+
+.infoList li:last-child {
+  margin-bottom: 0;
+}
