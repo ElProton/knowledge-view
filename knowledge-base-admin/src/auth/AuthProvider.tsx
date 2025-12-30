@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useCallback, ReactNode } from 'react';
+import { useState, useEffect, useCallback, ReactNode } from 'react';
 import { AuthContext } from './AuthContext';
 import { AuthState, User } from '@/types/auth.types';
 import { authApi } from '@/api/authApi';

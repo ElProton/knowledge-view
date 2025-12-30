@@ -1,4 +1,4 @@
-﻿import { OAUTH2_CONFIG } from '@/config/constants';
+import { OAUTH2_CONFIG } from '@/config/constants';
 import { OAuth2TokenResponse, User } from '@/types/auth.types';
 
 export const authApi = {

@@ -1,4 +1,4 @@
-﻿export type DocumentStatus = 
+export type DocumentStatus = 
   | 'draft' 
   | 'spec_to_validate' 
   | 'validated' 

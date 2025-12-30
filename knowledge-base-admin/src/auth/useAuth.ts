@@ -1,4 +1,4 @@
-﻿import { useContext } from 'react';
+import { useContext } from 'react';
 import { AuthContext } from './AuthContext';
 import { AuthContextType } from '@/types/auth.types';
 

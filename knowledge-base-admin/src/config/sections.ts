@@ -1,4 +1,4 @@
-﻿import { lazy } from 'react';
+import { lazy } from 'react';
 import { SectionConfig } from '@/types/section.types';
 
 const HomePage = lazy(() => import('@/pages/Home/HomePage'));
