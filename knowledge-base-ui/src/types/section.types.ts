@@ -9,4 +9,5 @@ export interface SectionConfig {
   component: LazyExoticComponent<ComponentType<unknown>>;
   filter?: Record<string, string>;
   disabled?: boolean;
+  hidden?: boolean;
 }

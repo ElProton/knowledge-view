@@ -28,13 +28,26 @@ export const sectionsConfig: SectionConfig[] = [
   //   description: 'Gérer la base de connaissances',
   //   component: lazy(() => import('../sections/Knowledge/KnowledgePage')),
   // },
-  // {
-  //   id: 'prompts',
-  //   label: 'Prompts',
-  //   path: '/prompts',
-  //   icon: 'code',
-  //   description: 'Visualiser et modifier les prompts système',
-  //   component: lazy(() => import('../sections/Prompts/PromptsPage')),
-  //   filter: { type: 'prompt' }
-  // },
+  {
+    id: 'prompts',
+    label: 'Prompts',
+    path: '/prompts',
+    icon: 'code',
+    description: 'Visualiser et modifier les prompts système',
+    component: lazy(() => import('../pages/Prompts/PromptListPage')),
+  },
+  {
+    id: 'prompts-create',
+    label: 'Créer Prompt',
+    path: '/prompts/new',
+    component: lazy(() => import('../pages/Prompts/PromptCreatePage')),
+    hidden: true,
+  },
+  {
+    id: 'prompts-detail',
+    label: 'Détail Prompt',
+    path: '/prompts/:id',
+    component: lazy(() => import('../pages/Prompts/PromptDetailPage')),
+    hidden: true,
+  },
 ];

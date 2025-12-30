@@ -24,7 +24,7 @@ export const Sidebar: React.FC = () => {
 
       <nav className={styles.nav}>
         {sectionsConfig
-          .filter((section) => !section.disabled)
+          .filter((section) => !section.disabled && !section.hidden)
           .map((section) => (
             <NavLink
               key={section.id}

@@ -1,19 +1,27 @@
 ﻿export interface KBDocument {
-  _id: string;
+  id: string;
   title: string;
-  content: string;
-  type: DocumentType;
-  status: DocumentStatus;
-  createdAt: string;
-  updatedAt: string;
-  metadata?: Record<string, unknown>;
+  type: string;
+  theme?: string[];
+  tags?: string[];
+  data?: Record<string, any>;
+  created_at: string;
+  updated_at: string;
+  created_by?: string;
+  updated_by?: string;
+  deleted_at?: string;
 }
 
-export type DocumentType = 'specification' | 'knowledge' | 'prompt' | 'prospect' | 'other';
+export interface PromptDocument extends KBDocument {
+  type: 'prompt';
+  data: {
+    content: string;
+  };
+}
 
-export type DocumentStatus =
-  | 'draft'
-  | 'spec_to_validate'
-  | 'validated'
-  | 'rejected'
-  | 'archived';
+export interface DocumentListResponse {
+  items: KBDocument[];
+  total: number;
+  limit: number;
+  skip: number;
+}
