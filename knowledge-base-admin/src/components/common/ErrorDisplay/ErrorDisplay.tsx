@@ -1,4 +1,4 @@
-﻿import { ApiError } from '@/types/api.types';
+import { ApiError } from '@/types/api.types';
 import styles from './ErrorDisplay.module.css';
 
 interface ErrorDisplayProps {

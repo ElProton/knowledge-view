@@ -1,4 +1,4 @@
-﻿import { ContentFrame } from '@/components/layout/ContentFrame/ContentFrame';
+import { ContentFrame } from '@/components/layout/ContentFrame/ContentFrame';
 import styles from './PromptsViewPage.module.css';
 
 const PromptsViewPage = () => {

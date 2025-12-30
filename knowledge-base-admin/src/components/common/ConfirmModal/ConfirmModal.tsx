@@ -1,4 +1,4 @@
-﻿import { ReactNode } from 'react';
+import { ReactNode } from 'react';
 import { Button } from '../Button/Button';
 import styles from './ConfirmModal.module.css';
 

@@ -1,4 +1,4 @@
-﻿import { ContentFrame } from '@/components/layout/ContentFrame/ContentFrame';
+import { ContentFrame } from '@/components/layout/ContentFrame/ContentFrame';
 import { useAuth } from '@/auth/useAuth';
 import { getEnabledSections } from '@/config/sections';
 import { Link } from 'react-router-dom';

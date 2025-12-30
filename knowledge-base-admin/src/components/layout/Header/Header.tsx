@@ -1,4 +1,4 @@
-﻿import { useAuth } from '@/auth/useAuth';
+import { useAuth } from '@/auth/useAuth';
 import { Button } from '@/components/common/Button/Button';
 import styles from './Header.module.css';
 

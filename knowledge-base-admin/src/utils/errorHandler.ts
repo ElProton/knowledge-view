@@ -1,4 +1,4 @@
-﻿import { ApiError } from '@/types/api.types';
+import { ApiError } from '@/types/api.types';
 import { HTTP_STATUS } from '@/config/constants';
 
 export const parseApiError = (error: unknown): ApiError => {

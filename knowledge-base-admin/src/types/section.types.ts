@@ -1,4 +1,4 @@
-﻿import { ComponentType } from 'react';
+import { ComponentType } from 'react';
 import { DocumentType, DocumentStatus } from './document.types';
 
 export interface SectionConfig {

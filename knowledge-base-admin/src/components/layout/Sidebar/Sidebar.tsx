@@ -1,4 +1,4 @@
-﻿import { NavLink } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { getEnabledSections } from '@/config/sections';
 import styles from './Sidebar.module.css';
 

@@ -1,4 +1,4 @@
-﻿import { ReactNode, Suspense } from 'react';
+import { ReactNode, Suspense } from 'react';
 import { Header } from '../Header/Header';
 import { Sidebar } from '../Sidebar/Sidebar';
 import { Loader } from '@/components/common/Loader/Loader';
