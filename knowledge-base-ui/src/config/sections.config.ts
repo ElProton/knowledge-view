@@ -50,4 +50,26 @@ export const sectionsConfig: SectionConfig[] = [
     component: lazy(() => import('../pages/Prompts/PromptDetailPage')),
     hidden: true,
   },
+  {
+    id: 'posts',
+    label: 'Posts',
+    path: '/post',
+    icon: 'share',
+    description: 'Gérer les publications réseaux sociaux',
+    component: lazy(() => import('../pages/Posts/PostListPage')),
+  },
+  {
+    id: 'posts-create',
+    label: 'Créer Post',
+    path: '/post/new',
+    component: lazy(() => import('../pages/Posts/PostCreatePage')),
+    hidden: true,
+  },
+  {
+    id: 'posts-detail',
+    label: 'Détail Post',
+    path: '/post/:id',
+    component: lazy(() => import('../pages/Posts/PostDetailPage')),
+    hidden: true,
+  },
 ];

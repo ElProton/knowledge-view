@@ -19,6 +19,29 @@ export interface PromptDocument extends KBDocument {
   };
 }
 
+export interface PostLink {
+  label: string;
+  url: string;
+  id: string | null;
+}
+
+// TODO: REFACTOR - Generic Component needed
+export interface PostDocument extends KBDocument {
+  type: 'post';
+  data: {
+    platform: string;
+    published_date: string;
+    content: string;
+    engagement?: {
+      views?: number;
+      reaction?: number;
+      comments?: number;
+      shares?: number;
+    };
+  };
+  links?: PostLink[];
+}
+
 export interface DocumentListResponse {
   items: KBDocument[];
   total: number;
