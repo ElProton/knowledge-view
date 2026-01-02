@@ -1,55 +1,43 @@
-﻿// TODO: REFACTOR - Generic Component needed
-import React, { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { PostDocument } from '../../types/document.types';
+import { ResourceFormProps } from '../../types/resource.types';
 import styles from './PostForm.module.css';
-import { Button } from '../common/Button/Button';
 
 const POST_CONTENT_MAX_LENGTH = 2000;
 
-interface PostFormProps {
-  initialData?: Partial<PostDocument>;
-  onSubmit: (data: Partial<PostDocument>) => Promise<void>;
-  isEditing?: boolean;
-  isLoading?: boolean;
-}
-
-export const PostForm: React.FC<PostFormProps> = ({
-  initialData,
-  onSubmit,
+/**
+ * Formulaire spécifique pour l'édition des Posts.
+ * Implémente ResourceFormProps pour être injectable dans ResourceView.
+ */
+export const PostForm: React.FC<ResourceFormProps<PostDocument>> = ({
+  value,
+  onChange,
   isEditing = false,
   isLoading = false,
 }) => {
-  const [title, setTitle] = useState(initialData?.title || '');
-  const [theme, setTheme] = useState(initialData?.theme?.join(', ') || '');
-  const [tags, setTags] = useState(initialData?.tags?.join(', ') || '');
-  const [platform, setPlatform] = useState(initialData?.data?.platform || '');
-  const [publishedDate, setPublishedDate] = useState(initialData?.data?.published_date || '');
-  const [content, setContent] = useState(initialData?.data?.content || '');
+  const [title, setTitle] = useState(value?.title || '');
+  const [theme, setTheme] = useState(value?.theme?.join(', ') || '');
+  const [tags, setTags] = useState(value?.tags?.join(', ') || '');
+  const [platform, setPlatform] = useState(value?.data?.platform || '');
+  const [publishedDate, setPublishedDate] = useState(value?.data?.published_date || '');
+  const [content, setContent] = useState(value?.data?.content || '');
   const [postUrl, setPostUrl] = useState('');
 
   useEffect(() => {
-    if (initialData) {
-      setTitle(initialData.title || '');
-      setTheme(initialData.theme?.join(', ') || '');
-      setTags(initialData.tags?.join(', ') || '');
-      setPlatform(initialData.data?.platform || '');
-      setPublishedDate(initialData.data?.published_date || '');
-      setContent(initialData.data?.content || '');
+    if (value) {
+      setTitle(value.title || '');
+      setTheme(value.theme?.join(', ') || '');
+      setTags(value.tags?.join(', ') || '');
+      setPlatform(value.data?.platform || '');
+      setPublishedDate(value.data?.published_date || '');
+      setContent(value.data?.content || '');
 
-      // Récupérer le lien du post (label === 'post')
-      const postLink = initialData.links?.find((link) => link.label === 'post');
+      const postLink = value.links?.find((link) => link.label === 'post');
       setPostUrl(postLink?.url || '');
     }
-  }, [initialData]);
+  }, [value]);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (content.length > POST_CONTENT_MAX_LENGTH) {
-      alert(`Le contenu ne peut pas dépasser ${POST_CONTENT_MAX_LENGTH} caractères.`);
-      return;
-    }
-
+  useEffect(() => {
     const formData: Partial<PostDocument> = {
       title,
       theme: theme.split(',').map((t) => t.trim()).filter(Boolean),
@@ -58,19 +46,20 @@ export const PostForm: React.FC<PostFormProps> = ({
         platform,
         published_date: publishedDate,
         content,
-        engagement: initialData?.data?.engagement || {},
+        engagement: value?.data?.engagement || {},
       },
       links: postUrl
         ? [{ label: 'post', url: postUrl, id: null }]
         : [],
     };
-    await onSubmit(formData);
-  };
+
+    onChange(formData);
+  }, [title, theme, tags, platform, publishedDate, content, postUrl]);
 
   const remainingChars = POST_CONTENT_MAX_LENGTH - content.length;
 
   return (
-    <form onSubmit={handleSubmit} className={styles.form}>
+    <div className={styles.form}>
       <div className={styles.formGroup}>
         <label htmlFor="title">Titre</label>
         <input
@@ -159,12 +148,6 @@ export const PostForm: React.FC<PostFormProps> = ({
           className={styles.textarea}
         />
       </div>
-
-      <div className={styles.actions}>
-        <Button type="submit" disabled={isLoading}>
-          {isLoading ? 'Enregistrement...' : isEditing ? 'Mettre à jour' : 'Créer'}
-        </Button>
-      </div>
-    </form>
+    </div>
   );
 };

@@ -80,6 +80,19 @@ class ApiClient {
 
     return this.handleResponse<T>(response);
   }
+
+  async delete<T = void>(endpoint: string): Promise<T> {
+    const response = await fetch(`${this.baseUrl}${endpoint}`, {
+      method: 'DELETE',
+      headers: await this.getHeaders(),
+    });
+
+    if (response.status === 204) {
+      return undefined as T;
+    }
+
+    return this.handleResponse<T>(response);
+  }
 }
 
 export const apiClient = new ApiClient();

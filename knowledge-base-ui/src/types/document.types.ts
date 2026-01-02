@@ -25,7 +25,6 @@ export interface PostLink {
   id: string | null;
 }
 
-// TODO: REFACTOR - Generic Component needed
 export interface PostDocument extends KBDocument {
   type: 'post';
   data: {
