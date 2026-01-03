@@ -1,4 +1,4 @@
-﻿import { ReactNode } from 'react';
+﻿import { ReactNode, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { BaseDocument, ResourceConfig } from '../../types/resource.types';
 import { Button } from '../common/Button/Button';
@@ -62,10 +62,19 @@ export function ResourceList<T extends BaseDocument>({
   pagination,
 }: ResourceListProps<T>) {
   const navigate = useNavigate();
+  const [activeFilterId, setActiveFilterId] = useState<string | null>(null);
 
   const handleItemClick = (item: T) => {
     navigate(`${basePath}/${item.id}`);
   };
+
+  // Filtrage des items selon le filtre actif
+  const filteredItems = activeFilterId
+    ? items.filter((item) => {
+        const filter = config.list.quickFilters?.find((f) => f.id === activeFilterId);
+        return filter ? filter.filterFn(item) : true;
+      })
+    : items;
 
   if (loading && items.length === 0) {
     return <LoadingSpinner message={`Chargement des ${config.labels.plural.toLowerCase()}...`} />;
@@ -84,13 +93,33 @@ export function ResourceList<T extends BaseDocument>({
         </Button>
       </div>
 
+      {config.list.quickFilters && config.list.quickFilters.length > 0 && (
+        <div className={styles.quickFilters}>
+          <Button
+            variant={activeFilterId === null ? 'primary' : 'secondary'}
+            onClick={() => setActiveFilterId(null)}
+          >
+            Tous
+          </Button>
+          {config.list.quickFilters.map((filter) => (
+            <Button
+              key={filter.id}
+              variant={activeFilterId === filter.id ? 'primary' : 'secondary'}
+              onClick={() => setActiveFilterId(filter.id)}
+            >
+              {filter.label}
+            </Button>
+          ))}
+        </div>
+      )}
+
       <div className={styles.list}>
-        {items.length === 0 ? (
+        {filteredItems.length === 0 ? (
           <p className={styles.empty}>
             Aucun {config.labels.singular.toLowerCase()} trouvé.
           </p>
         ) : (
-          items.map((item) => (
+          filteredItems.map((item) => (
             <div
               key={item.id}
               className={styles.card}
@@ -142,7 +171,7 @@ export function ResourceList<T extends BaseDocument>({
           </span>
           <Button
             onClick={pagination.onNext}
-            disabled={items.length < pagination.limit}
+            disabled={filteredItems.length < pagination.limit}
             variant="secondary"
           >
             Suivant

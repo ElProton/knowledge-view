@@ -1,4 +1,4 @@
-﻿import { ReactNode, useState, useCallback } from 'react';
+﻿import { ReactNode, useState, useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { BaseDocument, ResourceConfig, ResourceFormComponent } from '../../types/resource.types';
 import { Button } from '../common/Button/Button';
@@ -61,6 +61,13 @@ export function ResourceView<T extends BaseDocument>({
   const navigate = useNavigate();
   const [formData, setFormData] = useState<Partial<T>>(initialValues || {});
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Synchroniser formData avec initialValues quand elles changent
+  useEffect(() => {
+    if (initialValues) {
+      setFormData(initialValues);
+    }
+  }, [initialValues]);
 
   const handleFormChange = useCallback((data: Partial<T>) => {
     setFormData(data);

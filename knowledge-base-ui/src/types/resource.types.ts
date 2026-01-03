@@ -47,6 +47,8 @@ export interface ResourceConfig<T extends BaseDocument> {
   list: {
     /** Colonnes à afficher dans la liste */
     columns: ColumnConfig<T>[];
+    /** Filtres rapides optionnels pour filtrer la liste côté client */
+    quickFilters?: QuickFilter<T>[];
   };
   
   /** Champs en lecture seule (non modifiables en édition) */
@@ -71,3 +73,15 @@ export interface ResourceFormProps<T extends BaseDocument> {
  * Type du composant de formulaire à injecter.
  */
 export type ResourceFormComponent<T extends BaseDocument> = ComponentType<ResourceFormProps<T>>;
+
+/**
+ * Filtre rapide pour filtrer la liste côté client.
+ */
+export interface QuickFilter<T extends BaseDocument> {
+  /** Identifiant unique du filtre */
+  id: string;
+  /** Label affiché sur le bouton */
+  label: string;
+  /** Fonction de filtrage */
+  filterFn: (item: T) => boolean;
+}

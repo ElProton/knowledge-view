@@ -98,6 +98,16 @@ export const MyForm: React.FC<ResourceFormProps<MyDocument>> = ({
   const [title, setTitle] = useState(value?.title || '');
   const [specificField, setSpecificField] = useState(value?.data?.specificField || '');
 
+  // ⚠️ CRITIQUE : Synchroniser le state local avec les props (chargement asynchrone)
+  // Sans cela, le formulaire restera vide après le chargement des données
+  useEffect(() => {
+    if (value) {
+      setTitle(value.title || '');
+      setSpecificField(value.data?.specificField || '');
+    }
+  }, [value]);
+
+  // Propager les changements vers le parent
   useEffect(() => {
     const formData: Partial<MyDocument> = {
       title,
@@ -291,6 +301,23 @@ export default function MyCreatePage() {
   hidden: true,
 },
 ```
+
+## ⚠️ Points de Vigilance (Troubleshooting)
+
+### Chargement Asynchrone et State Local
+Lors de l'édition d'un document, les données sont chargées de manière asynchrone. Le composant formulaire (`MyForm`) est monté initialement avec des valeurs vides ou par défaut.
+**Impératif :** Vous devez utiliser un `useEffect` pour mettre à jour le state local de votre formulaire lorsque la prop `value` change.
+
+```typescript
+useEffect(() => {
+  if (value) {
+    // Mettre à jour tous les states locaux
+    setTitle(value.title || '');
+    // ...
+  }
+}, [value]);
+```
+Sans cela, le formulaire restera vide même après que les données aient été récupérées de l'API.
 
 ## 🔧 Fonctionnalités Avancées
 

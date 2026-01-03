@@ -10,6 +10,7 @@ const iconMap: Record<string, string> = {
   book: '📚',
   code: '💻',
   share: '📢',
+  clipboard: '📋',
   default: '📁',
 };
 

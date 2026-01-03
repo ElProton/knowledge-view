@@ -41,6 +41,47 @@ export interface PostDocument extends KBDocument {
   links?: PostLink[];
 }
 
+/**
+ * Statuts possibles pour un besoin dans le workflow de validation.
+ */
+export enum NeedStatus {
+  ANALYSE = 'analyse',
+  VALIDATION = 'validation',
+  DETAIL = 'detail',
+  SPECIFICATION = 'specification',
+}
+
+/**
+ * Données spécifiques à un besoin.
+ */
+export interface NeedData {
+  status: NeedStatus;
+  content: string;
+  iteration: number;
+  response?: string;
+  parent_application_id?: string;
+  parent_application_name?: string;
+}
+
+/**
+ * Document de type "besoin" pour le workflow de validation agents/humains.
+ */
+export interface NeedDocument extends KBDocument {
+  type: 'need';
+  data: NeedData;
+}
+
+/**
+ * Document de type "modèle" pour stocker des structures de données JSON.
+ * Le contenu est stocké comme un objet Record pour faciliter le requêtage MongoDB.
+ */
+export interface ModelDocument extends KBDocument {
+  type: 'model';
+  data: {
+    content: Record<string, any>;
+  };
+}
+
 export interface DocumentListResponse {
   items: KBDocument[];
   total: number;
