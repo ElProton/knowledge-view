@@ -1,7 +1,9 @@
-﻿.formContainer {
+﻿.form {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  max-width: 800px;
+  margin: 0 auto;
 }
 
 .formGroup {
@@ -10,78 +12,57 @@
   gap: 0.5rem;
 }
 
-.label {
-  font-weight: 500;
-  font-size: 0.95rem;
+.formGroup label {
+  font-weight: 600;
   color: var(--text-primary);
 }
 
-.required {
-  color: var(--color-error);
-}
-
-.input {
-  padding: 0.75rem;
-  border: 1px solid var(--border-color);
-  border-radius: 4px;
-  font-size: 1rem;
-  transition: border-color 0.2s;
-}
-
-.input:focus {
-  outline: none;
-  border-color: var(--color-primary);
-}
-
-.input:disabled {
-  background-color: var(--bg-secondary);
-  cursor: not-allowed;
-}
-
+.input,
 .textarea {
   padding: 0.75rem;
   border: 1px solid var(--border-color);
   border-radius: 4px;
-  font-size: 0.95rem;
-  font-family: 'Courier New', Courier, monospace;
-  resize: vertical;
-  min-height: 200px;
-  transition: border-color 0.2s;
+  font-family: inherit;
+  font-size: 1rem;
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
 }
 
+.input:focus,
 .textarea:focus {
   outline: none;
-  border-color: var(--color-primary);
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px var(--primary-color-alpha);
 }
 
-.textarea:disabled {
-  background-color: var(--bg-secondary);
+.input:disabled {
+  background-color: var(--bg-tertiary);
   cursor: not-allowed;
+  opacity: 0.7;
 }
 
-.textareaError {
-  border-color: var(--color-error);
-}
-
-.textareaError:focus {
-  border-color: var(--color-error);
+.textarea {
+  resize: vertical;
+  min-height: 300px;
+  font-family: 'Consolas', 'Monaco', monospace;
 }
 
 .hint {
-  font-size: 0.85rem;
+  font-size: 0.875rem;
   color: var(--text-secondary);
-  margin: 0;
 }
 
 .error {
-  font-size: 0.9rem;
-  color: var(--color-error);
-  margin: 0;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+  padding: 0.75rem;
+  background-color: rgba(220, 38, 38, 0.1);
+  border: 1px solid rgba(220, 38, 38, 0.3);
+  border-radius: 4px;
+  color: #dc2626;
+  font-size: 0.875rem;
 }
 
-.errorIcon {
-  font-size: 1rem;
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1rem;
 }

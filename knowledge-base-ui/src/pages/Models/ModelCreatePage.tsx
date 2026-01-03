@@ -1,36 +1,48 @@
-﻿import { useNavigate } from 'react-router-dom';
-import { ModelDocument } from '../../types/document.types';
-import { ResourceView } from '../../components/generic/ResourceView';
+﻿import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { modelService } from '../../services/models/modelService';
 import { ModelForm } from '../../components/models/ModelForm';
-import { useResource } from '../../hooks/useResource';
-import { modelsConfig } from '../../features/models/models.config';
+import { ModelDocument } from '../../types/document.types';
+import { ErrorDisplay } from '../../components/common/ErrorDisplay/ErrorDisplay';
+import styles from './ModelCreatePage.module.css';
 
-/**
- * Page de création d'un nouveau modèle.
- * Utilise l'architecture générique ResourceView en mode création.
- */
 export default function ModelCreatePage() {
   const navigate = useNavigate();
-  const { loading, error, create } = useResource<ModelDocument>(modelsConfig);
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (data: Partial<ModelDocument>) => {
+    setIsLoading(true);
+    setError(null);
+
     try {
-      await create(data);
+      if (!data.title) {
+        throw new Error('Le titre est requis.');
+      }
+
+      const exists = await modelService.checkTitleExists(data.title);
+      if (exists) {
+        throw new Error('Un modèle avec ce titre existe déjà.');
+      }
+
+      await modelService.createModel(data);
       navigate('/models');
-    } catch (err) {
-      console.error('Error creating model:', err);
+    } catch (err: any) {
+      setError(err.message || 'Erreur lors de la création du modèle.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <ResourceView
-      config={modelsConfig}
-      mode="create"
-      FormComponent={ModelForm}
-      loading={loading}
-      error={error}
-      onSubmit={handleSubmit}
-      listPath="/models"
-    />
+    <div className={styles.container}>
+      <div className={styles.header}>
+        <h1>Créer un nouveau Modèle</h1>
+      </div>
+
+      {error && <ErrorDisplay message={error} />}
+
+      <ModelForm onSubmit={handleSubmit} isLoading={isLoading} />
+    </div>
   );
 }

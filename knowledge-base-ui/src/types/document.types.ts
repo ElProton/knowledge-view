@@ -72,14 +72,18 @@ export interface NeedDocument extends KBDocument {
 }
 
 /**
+ * Données spécifiques à un modèle.
+ */
+export interface ModelData {
+  content: Record<string, any>;
+}
+
+/**
  * Document de type "modèle" pour stocker des structures de données JSON.
- * Le contenu est stocké comme un objet Record pour faciliter le requêtage MongoDB.
  */
 export interface ModelDocument extends KBDocument {
   type: 'model';
-  data: {
-    content: Record<string, any>;
-  };
+  data: ModelData;
 }
 
 export interface DocumentListResponse {

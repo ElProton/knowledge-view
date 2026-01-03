@@ -98,7 +98,7 @@ export const sectionsConfig: SectionConfig[] = [
     id: 'models',
     label: 'Modèles',
     path: '/models',
-    icon: 'document',
+    icon: 'database',
     description: 'Gérer les modèles de données JSON',
     component: lazy(() => import('../pages/Models/ModelListPage')),
   },

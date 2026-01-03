@@ -1,164 +1,127 @@
-﻿import { useState, useEffect } from 'react';
+﻿import React, { useState, useEffect } from 'react';
 import { ModelDocument } from '../../types/document.types';
-import { ResourceFormProps } from '../../types/resource.types';
 import styles from './ModelForm.module.css';
+import { Button } from '../common/Button/Button';
 
-/**
- * Formulaire spécifique pour l'édition des Modèles.
- * Implémente ResourceFormProps pour être injectable dans ResourceView.
- * 
- * Gère la dualité String (édition) / Object (stockage) pour data.content :
- * - L'utilisateur édite du JSON texte dans un TextArea
- * - La validation syntaxique est effectuée en temps réel
- * - Seul du JSON valide est propagé au parent via onChange
- */
-export const ModelForm: React.FC<ResourceFormProps<ModelDocument>> = ({
-  value,
-  onChange,
+interface ModelFormProps {
+  initialData?: Partial<ModelDocument>;
+  onSubmit: (data: Partial<ModelDocument>) => Promise<void>;
+  isEditing?: boolean;
+  isLoading?: boolean;
+}
+
+export const ModelForm: React.FC<ModelFormProps> = ({
+  initialData,
+  onSubmit,
+  isEditing = false,
   isLoading = false,
 }) => {
-  const [title, setTitle] = useState(value?.title || '');
-  const [theme, setTheme] = useState(value?.theme?.join(', ') || '');
-  const [tags, setTags] = useState(value?.tags?.join(', ') || '');
+  const [title, setTitle] = useState(initialData?.title || '');
+  const [theme, setTheme] = useState(initialData?.theme?.join(', ') || '');
+  const [tags, setTags] = useState(initialData?.tags?.join(', ') || '');
   const [jsonText, setJsonText] = useState('');
   const [jsonError, setJsonError] = useState<string | null>(null);
 
-  // Initialisation : convertir Record<string, any> en texte JSON formaté
+  // Initialiser le state local à partir des props (chargement asynchrone)
   useEffect(() => {
-    if (value) {
-      setTitle(value.title || '');
-      setTheme(value.theme?.join(', ') || '');
-      setTags(value.tags?.join(', ') || '');
+    if (initialData) {
+      setTitle(initialData.title || '');
+      setTheme(initialData.theme?.join(', ') || '');
+      setTags(initialData.tags?.join(', ') || '');
       
-      if (value.data?.content) {
-        try {
-          setJsonText(JSON.stringify(value.data.content, null, 2));
-        } catch (error) {
-          setJsonText('{}');
-        }
-      } else {
-        setJsonText('{}');
+      // Convertir l'objet JSON en texte formaté
+      if (initialData.data?.content) {
+        setJsonText(JSON.stringify(initialData.data.content, null, 2));
       }
     }
-  }, [value?.id]); // Dépendance sur l'ID pour éviter re-sync intempestive
+  }, [initialData]);
 
-  // Mise à jour : parser le JSON et propager si valide
-  useEffect(() => {
-    let parsedContent: Record<string, any> | null = null;
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
 
-    // Tentative de parsing du JSON
-    if (jsonText.trim() === '') {
-      setJsonError('Le contenu JSON ne peut pas être vide');
-      parsedContent = null;
-    } else {
-      try {
-        parsedContent = JSON.parse(jsonText);
-        setJsonError(null);
-      } catch (error) {
-        if (error instanceof SyntaxError) {
-          setJsonError(`JSON invalide : ${error.message}`);
-        } else {
-          setJsonError('Erreur de parsing JSON');
-        }
-        parsedContent = null;
-      }
+    // Valider le JSON avant la soumission
+    let parsedContent: Record<string, any>;
+    try {
+      parsedContent = JSON.parse(jsonText);
+      setJsonError(null);
+    } catch (error) {
+      setJsonError('Le contenu JSON est invalide. Veuillez corriger la syntaxe.');
+      return;
     }
 
-    // Construction du document avec validation
     const formData: Partial<ModelDocument> = {
       title,
       theme: theme.split(',').map((t) => t.trim()).filter(Boolean),
       tags: tags.split(',').map((t) => t.trim()).filter(Boolean),
+      data: {
+        content: parsedContent,
+      },
     };
 
-    // Ne propager que si le JSON est valide
-    if (parsedContent !== null) {
-      formData.data = {
-        content: parsedContent,
-      };
-    }
-
-    onChange(formData);
-  }, [title, theme, tags, jsonText, onChange]);
-
-  const handleJsonChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    setJsonText(e.target.value);
+    await onSubmit(formData);
   };
 
   return (
-    <div className={styles.formContainer}>
+    <form onSubmit={handleSubmit} className={styles.form}>
       <div className={styles.formGroup}>
-        <label htmlFor="title" className={styles.label}>
-          Titre <span className={styles.required}>*</span>
-        </label>
+        <label htmlFor="title">Titre</label>
         <input
-          id="title"
           type="text"
-          className={styles.input}
+          id="title"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          disabled={isLoading}
-          placeholder="Ex: FicheUtilisateur, ConfigurationAPI..."
+          disabled={isEditing}
           required
+          className={styles.input}
         />
+        {isEditing && (
+          <small className={styles.hint}>Le titre ne peut pas être modifié.</small>
+        )}
       </div>
 
       <div className={styles.formGroup}>
-        <label htmlFor="theme" className={styles.label}>
-          Thème
-        </label>
+        <label htmlFor="theme">Thèmes (séparés par des virgules)</label>
         <input
-          id="theme"
           type="text"
-          className={styles.input}
+          id="theme"
           value={theme}
           onChange={(e) => setTheme(e.target.value)}
-          disabled={isLoading}
-          placeholder="Ex: authentification, base de données (séparés par des virgules)"
+          className={styles.input}
         />
-        <p className={styles.hint}>Séparez les thèmes par des virgules</p>
       </div>
 
       <div className={styles.formGroup}>
-        <label htmlFor="tags" className={styles.label}>
-          Tags
-        </label>
+        <label htmlFor="tags">Tags (séparés par des virgules)</label>
         <input
-          id="tags"
           type="text"
-          className={styles.input}
+          id="tags"
           value={tags}
           onChange={(e) => setTags(e.target.value)}
-          disabled={isLoading}
-          placeholder="Ex: user, api, schema (séparés par des virgules)"
+          className={styles.input}
         />
-        <p className={styles.hint}>Séparez les tags par des virgules</p>
       </div>
 
       <div className={styles.formGroup}>
-        <label htmlFor="content" className={styles.label}>
-          Contenu JSON <span className={styles.required}>*</span>
-        </label>
+        <label htmlFor="content">Contenu JSON du Modèle</label>
         <textarea
           id="content"
-          className={`${styles.textarea} ${jsonError ? styles.textareaError : ''}`}
           value={jsonText}
-          onChange={handleJsonChange}
-          disabled={isLoading}
-          placeholder='{"nom": "string", "age": "number", "email": "string"}'
+          onChange={(e) => setJsonText(e.target.value)}
           rows={15}
-          required
+          className={styles.textarea}
+          placeholder='{"attribut": "description", "exemple": "valeur"}'
         />
-        {jsonError && (
-          <p className={styles.error}>
-            <span className={styles.errorIcon}>⚠️</span>
-            {jsonError}
-          </p>
-        )}
-        <p className={styles.hint}>
-          Saisissez la structure JSON du modèle. La syntaxe doit être valide pour pouvoir sauvegarder.
-        </p>
+        {jsonError && <div className={styles.error}>{jsonError}</div>}
+        <small className={styles.hint}>
+          Saisissez un objet JSON valide décrivant la structure du modèle.
+        </small>
       </div>
-    </div>
+
+      <div className={styles.actions}>
+        <Button type="submit" disabled={isLoading}>
+          {isLoading ? 'Enregistrement...' : isEditing ? 'Mettre à jour' : 'Créer'}
+        </Button>
+      </div>
+    </form>
   );
 };

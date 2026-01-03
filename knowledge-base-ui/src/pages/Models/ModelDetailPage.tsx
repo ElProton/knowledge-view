@@ -1,64 +1,78 @@
-﻿import { useEffect } from 'react';
+﻿import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { ModelDocument } from '../../types/document.types';
-import { ResourceView } from '../../components/generic/ResourceView';
+import { modelService } from '../../services/models/modelService';
 import { ModelForm } from '../../components/models/ModelForm';
-import { useResource } from '../../hooks/useResource';
-import { modelsConfig } from '../../features/models/models.config';
+import { ModelDocument } from '../../types/document.types';
+import { LoadingSpinner } from '../../components/common/LoadingSpinner/LoadingSpinner';
+import { ErrorDisplay } from '../../components/common/ErrorDisplay/ErrorDisplay';
+import styles from './ModelDetailPage.module.css';
 
-/**
- * Page de détail/édition d'un modèle existant.
- * Utilise l'architecture générique ResourceView en mode édition.
- */
 export default function ModelDetailPage() {
   const { id } = useParams<{ id: string }>();
+  const [model, setModel] = useState<ModelDocument | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [isSaving, setIsSaving] = useState(false);
 
-  const { currentItem, loading, error, fetchOne, update, remove } = useResource<ModelDocument>(modelsConfig);
+  const fetchModel = async () => {
+    if (!id) return;
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await modelService.getModel(id);
+      setModel(data);
+    } catch (err) {
+      setError('Impossible de charger le modèle.');
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    if (id) {
-      fetchOne(id);
-    }
-  }, [id, fetchOne]);
+    fetchModel();
+  }, [id]);
 
   const handleSubmit = async (data: Partial<ModelDocument>) => {
-    if (!id) {
-      return;
-    }
+    if (!id) return;
+    setIsSaving(true);
+    setError(null);
 
     try {
-      await update(id, data);
+      await modelService.updateModel(id, data);
+      await fetchModel();
       alert('Modèle mis à jour avec succès.');
-    } catch (err) {
-      console.error('Error updating model:', err);
+    } catch (err: any) {
+      setError(err.message || 'Erreur lors de la mise à jour du modèle.');
+    } finally {
+      setIsSaving(false);
     }
   };
 
-  const handleDelete = async () => {
-    if (!id) {
-      return;
-    }
+  if (loading) {
+    return <LoadingSpinner message="Chargement du modèle..." />;
+  }
 
-    try {
-      await remove(id);
-    } catch (err) {
-      console.error('Error deleting model:', err);
-      throw err;
-    }
-  };
+  if (error) {
+    return <ErrorDisplay message={error} onRetry={fetchModel} />;
+  }
+
+  if (!model) {
+    return <ErrorDisplay message="Modèle introuvable." />;
+  }
 
   return (
-    <ResourceView
-      config={modelsConfig}
-      mode="edit"
-      FormComponent={ModelForm}
-      initialValues={currentItem || undefined}
-      loading={loading}
-      error={error}
-      onSubmit={handleSubmit}
-      onDelete={handleDelete}
-      listPath="/models"
-      onRetry={() => id && fetchOne(id)}
-    />
+    <div className={styles.container}>
+      <div className={styles.header}>
+        <h1>Détail du Modèle</h1>
+      </div>
+
+      <ModelForm
+        initialData={model}
+        onSubmit={handleSubmit}
+        isEditing={true}
+        isLoading={isSaving}
+      />
+    </div>
   );
 }
