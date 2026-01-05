@@ -1,15 +1,18 @@
 ﻿export interface KBDocument {
   id: string;
-  title: string;
+  title?: string | null;
   type: string;
   theme?: string[];
   tags?: string[];
-  data?: Record<string, any>;
+  tech_stack?: string[] | null;
+  data: Record<string, any>;
+  links?: { url: string | null; label: string | null }[];
   created_at: string;
   updated_at: string;
-  created_by?: string;
-  updated_by?: string;
-  deleted_at?: string;
+  created_by?: string | null;
+  updated_by?: string | null;
+  deleted_at?: string | null;
+  deleted_by?: string | null;
 }
 
 export interface PromptDocument extends KBDocument {
@@ -38,7 +41,6 @@ export interface PostDocument extends KBDocument {
       shares?: number;
     };
   };
-  links?: PostLink[];
 }
 
 /**
@@ -54,6 +56,19 @@ export enum NeedStatus {
 /**
  * Données spécifiques à un besoin.
  */
+export interface Specification {
+  job_story: string;
+  acceptance_criteria: string[];
+  out_of_scope: string[];
+  constraints: {
+    regulatory: string | null;
+    temporal: string | null;
+    budgetary: string | null;
+  };
+  gap_analysis: string;
+  source_quote: string;
+}
+
 export interface NeedData {
   status: NeedStatus;
   content: string;
@@ -61,6 +76,7 @@ export interface NeedData {
   response?: string;
   parent_application_id?: string;
   parent_application_name?: string;
+  specification?: Specification;
 }
 
 /**
