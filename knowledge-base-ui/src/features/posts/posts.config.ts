@@ -1,5 +1,5 @@
 ﻿import { ResourceConfig } from '../../types/resource.types';
-import { PostDocument } from '../../types/document.types';
+import { PostDocument, DocumentType } from '../../types/document.types';
 import { formatMongoDate } from '../../utils/dataHelpers';
 
 /**
@@ -7,7 +7,7 @@ import { formatMongoDate } from '../../utils/dataHelpers';
  * Définit les colonnes affichées, les labels et les champs en lecture seule.
  */
 export const postsConfig: ResourceConfig<PostDocument> = {
-  resourceType: 'post',
+  resourceType: DocumentType.POST,
   
   labels: {
     singular: 'un Post',

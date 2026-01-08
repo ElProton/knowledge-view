@@ -1,18 +1,22 @@
 ﻿import { useEffect, useState } from 'react';
-import { PostDocument } from '../../types/document.types';
+import { ApplicationDocument } from '../../types/document.types';
 import { ResourceList } from '../../components/generic/ResourceList';
 import { useResource } from '../../hooks/useResource';
-import { postsConfig } from '../../features/posts/posts.config';
+import { applicationsConfig } from '../../features/applications/applications.config';
 
-export default function PostListPage() {
+/**
+ * Page de liste des applications.
+ * Utilise le composant générique ResourceList avec la configuration spécifique aux applications.
+ */
+export default function ApplicationListPage() {
   const [limit, setLimit] = useState(25);
   const [skip, setSkip] = useState(0);
 
-  const { items, loading, error, total, fetchAll } = useResource<PostDocument>(postsConfig);
+  const { items, loading, error, total, fetchAll } = useResource<ApplicationDocument>(applicationsConfig);
 
   useEffect(() => {
     fetchAll(limit, skip).catch((err) => {
-      console.error('Error loading posts:', err);
+      console.error('Error loading applications:', err);
     });
   }, [limit, skip, fetchAll]);
 
@@ -31,12 +35,12 @@ export default function PostListPage() {
 
   return (
     <ResourceList
-      config={postsConfig}
+      config={applicationsConfig}
       items={items}
       loading={loading}
       error={error}
-      basePath="/post"
-      createPath="/post/new"
+      basePath="/application"
+      createPath="/application/new"
       onRetry={() => fetchAll(limit, skip)}
       pagination={{
         limit,

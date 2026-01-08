@@ -15,7 +15,9 @@ export default function NeedDetailPage() {
 
   useEffect(() => {
     if (id) {
-      fetchOne(id);
+      fetchOne(id).catch((err) => {
+        console.error('Error loading need:', err);
+      });
     }
   }, [id, fetchOne]);
 

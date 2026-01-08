@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+﻿import { useState, useEffect, useCallback } from 'react';
 import { NeedDocument, NeedStatus } from '../../types/document.types';
 import { ResourceFormProps } from '../../types/resource.types';
 import styles from './NeedForm.module.css';
@@ -20,6 +20,7 @@ export const NeedForm: React.FC<ResourceFormProps<NeedDocument>> = ({
   const [parentAppId, setParentAppId] = useState(value?.data?.parent_application_id || '');
   const [parentAppName, setParentAppName] = useState(value?.data?.parent_application_name || '');
 
+  // Synchronisation de l'état local avec la valeur externe
   useEffect(() => {
     if (value) {
       setTitle(value.title || '');
@@ -31,7 +32,8 @@ export const NeedForm: React.FC<ResourceFormProps<NeedDocument>> = ({
     }
   }, [value]);
 
-  useEffect(() => {
+  // Mémoïsation de la fonction de mise à jour pour éviter les re-renders inutiles
+  const handleFormChange = useCallback(() => {
     const formData: Partial<NeedDocument> = {
       title,
       theme: theme.split(',').map((t) => t.trim()).filter(Boolean),
@@ -47,7 +49,23 @@ export const NeedForm: React.FC<ResourceFormProps<NeedDocument>> = ({
     };
 
     onChange(formData);
-  }, [title, theme, tags, content, parentAppId, parentAppName, value?.data?.status, value?.data?.iteration, value?.data?.response]);
+  }, [
+    title, 
+    theme, 
+    tags, 
+    content, 
+    parentAppId, 
+    parentAppName, 
+    onChange,
+    value?.data?.status, 
+    value?.data?.iteration, 
+    value?.data?.response
+  ]);
+
+  // Appel de la fonction mémoïsée lors des changements
+  useEffect(() => {
+    handleFormChange();
+  }, [handleFormChange]);
 
   return (
     <div className={styles.form}>

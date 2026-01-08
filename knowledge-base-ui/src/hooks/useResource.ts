@@ -2,6 +2,7 @@
 import { apiClient } from '../services/api/apiClient';
 import { endpoints } from '../services/api/endpoints';
 import { BaseDocument, ResourceConfig } from '../types/resource.types';
+import { ApiListResponse, normalizeApiListResponse } from '../types/api.types';
 
 /**
  * État retourné par le hook useResource.
@@ -68,29 +69,16 @@ export function useResource<T extends BaseDocument>(
       setError(null);
 
       try {
-        const response = await apiClient.get<any>(endpoints.documents.list, {
+        const response = await apiClient.get<ApiListResponse<T>>(endpoints.documents.list, {
           type: config.resourceType,
           limit: limit.toString(),
           skip: skip.toString(),
           sort: '-updated_at',
         });
 
-        let itemsList: T[];
-        let totalCount: number;
-
-        if (Array.isArray(response)) {
-          itemsList = response as T[];
-          totalCount = response.length;
-        } else if (response.items && Array.isArray(response.items)) {
-          itemsList = response.items as T[];
-          totalCount = response.total || response.items.length;
-        } else {
-          itemsList = [];
-          totalCount = 0;
-        }
-
-        setItems(itemsList);
-        setTotal(totalCount);
+        const normalized = normalizeApiListResponse(response);
+        setItems(normalized.items);
+        setTotal(normalized.total);
       } catch (err) {
         const message = err instanceof Error ? err.message : 'Erreur lors du chargement des données';
         setError(message);
@@ -234,18 +222,17 @@ export function useResource<T extends BaseDocument>(
       }
 
       try {
-        const response = await apiClient.get<any>(endpoints.documents.list, {
+        const response = await apiClient.get<ApiListResponse<T>>(endpoints.documents.list, {
           type: config.resourceType,
           q: title,
           limit: '10',
         });
 
-        const itemsList: T[] = Array.isArray(response)
-          ? response
-          : (response.items || []);
+        const normalized = normalizeApiListResponse(response);
 
-        const matchingItems = itemsList.filter((doc) => {
-          const isSameTitle = doc.title.toLowerCase() === title.toLowerCase();
+        const matchingItems = normalized.items.filter((doc) => {
+          // Utilisation de optional chaining pour éviter les erreurs sur title null/undefined
+          const isSameTitle = doc.title?.toLowerCase() === title.toLowerCase();
           const isDifferentId = excludeId ? doc.id !== excludeId : true;
           return isSameTitle && isDifferentId;
         });

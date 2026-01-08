@@ -14,7 +14,9 @@ export default function PostDetailPage() {
 
   useEffect(() => {
     if (id) {
-      fetchOne(id);
+      fetchOne(id).catch((err) => {
+        console.error('Error loading post:', err);
+      });
     }
   }, [id, fetchOne]);
 

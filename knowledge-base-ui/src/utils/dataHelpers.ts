@@ -1,4 +1,6 @@
-﻿/**
+﻿import { MongoDateValue } from '../types/document.types';
+
+/**
  * Accède de manière sécurisée à une propriété imbriquée d'un objet.
  * Gère les cas où les propriétés intermédiaires sont nulles ou undefined.
  * 
@@ -11,8 +13,8 @@
  * const platform = getNestedValue(post, 'data.platform', 'Unknown');
  * const title = getNestedValue(post, 'title', 'Untitled');
  */
-export function getNestedValue<T = any>(
-  obj: any,
+export function getNestedValue<T = unknown>(
+  obj: Record<string, unknown>,
   path: string,
   defaultValue: T | null = null
 ): T | null {
@@ -21,7 +23,7 @@ export function getNestedValue<T = any>(
   }
 
   const keys = path.split('.');
-  let current = obj;
+  let current: unknown = obj;
 
   for (const key of keys) {
     if (current === null || current === undefined) {
@@ -32,10 +34,46 @@ export function getNestedValue<T = any>(
       return defaultValue;
     }
 
-    current = current[key];
+    current = (current as Record<string, unknown>)[key];
   }
 
-  return current !== undefined ? current : defaultValue;
+  return current !== undefined ? (current as T) : defaultValue;
+}
+
+/**
+ * Parse une valeur de date MongoDB et retourne un objet Date.
+ * Gère le format MongoDB { $date: "ISO_STRING" } ainsi que les chaînes ISO standard.
+ * 
+ * @param dateValue - Valeur de date (format MongoDB ou ISO string)
+ * @returns Objet Date ou null si invalide
+ */
+function parseMongoDate(dateValue: MongoDateValue): Date | null {
+  if (!dateValue) {
+    return null;
+  }
+
+  try {
+    let dateString: string;
+
+    if (typeof dateValue === 'object' && '$date' in dateValue) {
+      dateString = dateValue.$date;
+    } else if (typeof dateValue === 'string') {
+      dateString = dateValue;
+    } else {
+      return null;
+    }
+
+    const date = new Date(dateString);
+    
+    if (isNaN(date.getTime())) {
+      return null;
+    }
+
+    return date;
+  } catch (error) {
+    console.warn('Error parsing MongoDB date:', error);
+    return null;
+  }
 }
 
 /**
@@ -51,35 +89,16 @@ export function getNestedValue<T = any>(
  * formatMongoDate("2025-12-31T10:00:00Z") // "31/12/2025"
  */
 export function formatMongoDate(
-  dateValue: any,
+  dateValue: MongoDateValue,
   defaultValue: string = 'Non définie'
 ): string {
-  if (!dateValue) {
+  const date = parseMongoDate(dateValue);
+  
+  if (!date) {
     return defaultValue;
   }
 
-  try {
-    let dateString: string;
-
-    if (typeof dateValue === 'object' && dateValue.$date) {
-      dateString = dateValue.$date;
-    } else if (typeof dateValue === 'string') {
-      dateString = dateValue;
-    } else {
-      return defaultValue;
-    }
-
-    const date = new Date(dateString);
-    
-    if (isNaN(date.getTime())) {
-      return defaultValue;
-    }
-
-    return date.toLocaleDateString('fr-FR');
-  } catch (error) {
-    console.warn('Error formatting date:', error);
-    return defaultValue;
-  }
+  return date.toLocaleDateString('fr-FR');
 }
 
 /**
@@ -90,39 +109,20 @@ export function formatMongoDate(
  * @returns Date et heure formatées ou valeur par défaut
  */
 export function formatMongoDateTime(
-  dateValue: any,
+  dateValue: MongoDateValue,
   defaultValue: string = 'Non définie'
 ): string {
-  if (!dateValue) {
+  const date = parseMongoDate(dateValue);
+  
+  if (!date) {
     return defaultValue;
   }
 
-  try {
-    let dateString: string;
-
-    if (typeof dateValue === 'object' && dateValue.$date) {
-      dateString = dateValue.$date;
-    } else if (typeof dateValue === 'string') {
-      dateString = dateValue;
-    } else {
-      return defaultValue;
-    }
-
-    const date = new Date(dateString);
-    
-    if (isNaN(date.getTime())) {
-      return defaultValue;
-    }
-
-    return date.toLocaleDateString('fr-FR', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-  } catch (error) {
-    console.warn('Error formatting date time:', error);
-    return defaultValue;
-  }
+  return date.toLocaleDateString('fr-FR', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
 }

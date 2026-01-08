@@ -1,23 +1,26 @@
-﻿import { apiClient } from '../api/apiClient';
+﻿/**
+ * @deprecated Ce service est maintenu pour compatibilité mais devrait être remplacé par useResource.
+ * Utilisez plutôt le hook générique useResource avec une config appropriée.
+ * 
+ * @example
+ * const { items, fetchAll, create } = useResource(promptsConfig);
+ */
+import { apiClient } from '../api/apiClient';
 import { endpoints } from '../api/endpoints';
-import { PromptDocument, KBDocument } from '../../types/document.types';
+import { PromptDocument, KBDocument, DocumentType } from '../../types/document.types';
+import { ApiListResponse, normalizeApiListResponse } from '../../types/api.types';
 
 class PromptService {
   async getPrompts(limit: number = 25, skip: number = 0): Promise<PromptDocument[]> {
-    const response = await apiClient.get<any>(endpoints.documents.list, {
-      type: 'prompt',
+    const response = await apiClient.get<ApiListResponse<PromptDocument>>(endpoints.documents.list, {
+      type: DocumentType.PROMPT,
       limit: limit.toString(),
       skip: skip.toString(),
       sort: '-updated_at',
     });
 
-    if (Array.isArray(response)) {
-      return response as PromptDocument[];
-    } else if (response.items && Array.isArray(response.items)) {
-      return response.items as PromptDocument[];
-    }
-
-    return [];
+    const normalized = normalizeApiListResponse(response);
+    return normalized.items;
   }
 
   async getPrompt(id: string): Promise<PromptDocument> {
@@ -28,7 +31,7 @@ class PromptService {
   async createPrompt(prompt: Partial<PromptDocument>): Promise<PromptDocument> {
     const response = await apiClient.post<KBDocument>(endpoints.documents.create, {
       ...prompt,
-      type: 'prompt',
+      type: DocumentType.PROMPT,
     });
     return response as PromptDocument;
   }
@@ -39,17 +42,15 @@ class PromptService {
   }
 
   async checkTitleExists(title: string): Promise<boolean> {
-    const response = await apiClient.get<any>(endpoints.documents.list, {
-      type: 'prompt',
+    const response = await apiClient.get<ApiListResponse<KBDocument>>(endpoints.documents.list, {
+      type: DocumentType.PROMPT,
       q: title,
       limit: '1',
     });
 
-    const items: KBDocument[] = Array.isArray(response)
-      ? response
-      : (response.items || []);
+    const normalized = normalizeApiListResponse(response);
 
-    return items.some((doc) => doc.title.toLowerCase() === title.toLowerCase());
+    return normalized.items.some((doc) => doc.title?.toLowerCase() === title.toLowerCase());
   }
 }
 

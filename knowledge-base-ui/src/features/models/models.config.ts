@@ -1,9 +1,9 @@
 ﻿import { ResourceConfig } from '../../types/resource.types';
-import { ModelDocument } from '../../types/document.types';
+import { ModelDocument, DocumentType, MongoDateValue } from '../../types/document.types';
 import { formatMongoDate } from '../../utils/dataHelpers';
 
 export const modelsConfig: ResourceConfig<ModelDocument> = {
-  resourceType: 'model',
+  resourceType: DocumentType.MODEL,
 
   labels: {
     singular: 'un Modèle',
@@ -20,12 +20,12 @@ export const modelsConfig: ResourceConfig<ModelDocument> = {
       {
         key: 'created_at',
         label: 'Date de création',
-        formatter: (value) => formatMongoDate(value),
+        formatter: (value) => formatMongoDate(value as MongoDateValue),
       },
       {
         key: 'updated_at',
         label: 'Dernière modification',
-        formatter: (value) => formatMongoDate(value),
+        formatter: (value) => formatMongoDate(value as MongoDateValue),
       },
     ],
   },

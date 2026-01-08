@@ -1,12 +1,12 @@
 ﻿import { ResourceConfig } from '../../types/resource.types';
-import { NeedDocument, NeedStatus } from '../../types/document.types';
+import { NeedDocument, NeedStatus, DocumentType, MongoDateValue } from '../../types/document.types';
 import { formatMongoDate } from '../../utils/dataHelpers';
 
 /**
  * Configuration de la ressource "Besoins" pour le système générique.
  */
 export const needsConfig: ResourceConfig<NeedDocument> = {
-  resourceType: 'besoin',
+  resourceType: DocumentType.BESOIN,
   
   labels: {
     singular: 'Besoin',
@@ -32,7 +32,7 @@ export const needsConfig: ResourceConfig<NeedDocument> = {
       {
         key: 'updated_at',
         label: 'Dernière mise à jour',
-        formatter: formatMongoDate,
+        formatter: (value) => formatMongoDate(value as MongoDateValue),
       },
     ],
     

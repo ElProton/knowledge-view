@@ -1,6 +1,6 @@
 ﻿import { useState, useCallback } from 'react';
 import { apiClient } from '../services/api/apiClient';
-import { ApiError } from '../types/api.types';
+import { ApiError, isApiError } from '../types/api.types';
 
 interface UseApiState<T> {
   data: T | null;
@@ -23,7 +23,14 @@ export function useApi<T>() {
         setState({ data, loading: false, error: null });
         return data;
       } catch (err) {
-        const apiError = err as ApiError;
+        // Utilisation du type guard pour valider le type avant le cast
+        const apiError: ApiError = isApiError(err) 
+          ? err 
+          : {
+              code: 'UNKNOWN_ERROR',
+              message: err instanceof Error ? err.message : 'Une erreur inconnue est survenue',
+              details: err instanceof Error ? { stack: err.stack } : undefined
+            };
         setState((prev) => ({ ...prev, loading: false, error: apiError }));
         throw apiError;
       }

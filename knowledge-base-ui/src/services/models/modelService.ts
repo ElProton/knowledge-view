@@ -1,23 +1,26 @@
-﻿import { apiClient } from '../api/apiClient';
+﻿/**
+ * @deprecated Ce service est maintenu pour compatibilité mais devrait être remplacé par useResource.
+ * Utilisez plutôt le hook générique useResource avec modelsConfig.
+ * 
+ * @example
+ * const { items, fetchAll, create } = useResource(modelsConfig);
+ */
+import { apiClient } from '../api/apiClient';
 import { endpoints } from '../api/endpoints';
-import { ModelDocument, KBDocument } from '../../types/document.types';
+import { ModelDocument, KBDocument, DocumentType } from '../../types/document.types';
+import { ApiListResponse, normalizeApiListResponse } from '../../types/api.types';
 
 class ModelService {
   async getModels(limit: number = 25, skip: number = 0): Promise<ModelDocument[]> {
-    const response = await apiClient.get<any>(endpoints.documents.list, {
-      type: 'model',
+    const response = await apiClient.get<ApiListResponse<ModelDocument>>(endpoints.documents.list, {
+      type: DocumentType.MODEL,
       limit: limit.toString(),
       skip: skip.toString(),
       sort: '-updated_at',
     });
 
-    if (Array.isArray(response)) {
-      return response as ModelDocument[];
-    } else if (response.items && Array.isArray(response.items)) {
-      return response.items as ModelDocument[];
-    }
-
-    return [];
+    const normalized = normalizeApiListResponse(response);
+    return normalized.items;
   }
 
   async getModel(id: string): Promise<ModelDocument> {
@@ -28,7 +31,7 @@ class ModelService {
   async createModel(model: Partial<ModelDocument>): Promise<ModelDocument> {
     const response = await apiClient.post<KBDocument>(endpoints.documents.create, {
       ...model,
-      type: 'model',
+      type: DocumentType.MODEL,
     });
     return response as ModelDocument;
   }
@@ -39,17 +42,15 @@ class ModelService {
   }
 
   async checkTitleExists(title: string): Promise<boolean> {
-    const response = await apiClient.get<any>(endpoints.documents.list, {
-      type: 'model',
+    const response = await apiClient.get<ApiListResponse<KBDocument>>(endpoints.documents.list, {
+      type: DocumentType.MODEL,
       q: title,
       limit: '1',
     });
 
-    const items: KBDocument[] = Array.isArray(response)
-      ? response
-      : (response.items || []);
+    const normalized = normalizeApiListResponse(response);
 
-    return items.some((doc) => doc.title.toLowerCase() === title.toLowerCase());
+    return normalized.items.some((doc) => doc.title?.toLowerCase() === title.toLowerCase());
   }
 }
 

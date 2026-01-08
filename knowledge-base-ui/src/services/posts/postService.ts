@@ -1,26 +1,29 @@
-﻿// TODO: REFACTOR - Generic Component needed
+﻿/**
+ * @deprecated Ce service est maintenu pour compatibilité mais devrait être remplacé par useResource.
+ * Utilisez plutôt le hook générique useResource avec postsConfig.
+ * 
+ * @example
+ * const { items, fetchAll, create } = useResource(postsConfig);
+ */
+// TODO: REFACTOR - Generic Component needed
 import { apiClient } from '../api/apiClient';
 import { endpoints } from '../api/endpoints';
-import { PostDocument, KBDocument } from '../../types/document.types';
+import { PostDocument, KBDocument, DocumentType } from '../../types/document.types';
+import { ApiListResponse, normalizeApiListResponse } from '../../types/api.types';
 
 const POST_CONTENT_MAX_LENGTH = 2000;
 
 class PostService {
   async getPosts(limit: number = 25, skip: number = 0): Promise<PostDocument[]> {
-    const response = await apiClient.get<any>(endpoints.documents.list, {
-      type: 'post',
+    const response = await apiClient.get<ApiListResponse<PostDocument>>(endpoints.documents.list, {
+      type: DocumentType.POST,
       limit: limit.toString(),
       skip: skip.toString(),
       sort: '-updated_at',
     });
 
-    if (Array.isArray(response)) {
-      return response as PostDocument[];
-    } else if (response.items && Array.isArray(response.items)) {
-      return response.items as PostDocument[];
-    }
-
-    return [];
+    const normalized = normalizeApiListResponse(response);
+    return normalized.items;
   }
 
   async getPost(id: string): Promise<PostDocument> {
@@ -33,7 +36,7 @@ class PostService {
 
     const response = await apiClient.post<KBDocument>(endpoints.documents.create, {
       ...post,
-      type: 'post',
+      type: DocumentType.POST,
     });
     return response as PostDocument;
   }
@@ -46,17 +49,15 @@ class PostService {
   }
 
   async checkTitleExists(title: string): Promise<boolean> {
-    const response = await apiClient.get<any>(endpoints.documents.list, {
-      type: 'post',
+    const response = await apiClient.get<ApiListResponse<KBDocument>>(endpoints.documents.list, {
+      type: DocumentType.POST,
       q: title,
       limit: '1',
     });
 
-    const items: KBDocument[] = Array.isArray(response)
-      ? response
-      : (response.items || []);
+    const normalized = normalizeApiListResponse(response);
 
-    return items.some((doc) => doc.title.toLowerCase() === title.toLowerCase());
+    return normalized.items.some((doc) => doc.title?.toLowerCase() === title.toLowerCase());
   }
 
   private validateContent(content: string | undefined): void {

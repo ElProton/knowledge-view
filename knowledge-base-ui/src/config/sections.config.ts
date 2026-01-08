@@ -116,4 +116,26 @@ export const sectionsConfig: SectionConfig[] = [
     component: lazy(() => import('../pages/Models/ModelDetailPage')),
     hidden: true,
   },
+  {
+    id: 'applications',
+    label: 'Applications',
+    path: '/application',
+    icon: 'grid',
+    description: 'Gérer les applications et leurs fonctionnalités',
+    component: lazy(() => import('../pages/Applications/ApplicationListPage')),
+  },
+  {
+    id: 'applications-create',
+    label: 'Créer Application',
+    path: '/application/new',
+    component: lazy(() => import('../pages/Applications/ApplicationCreatePage')),
+    hidden: true,
+  },
+  {
+    id: 'applications-detail',
+    label: 'Détail Application',
+    path: '/application/:id',
+    component: lazy(() => import('../pages/Applications/ApplicationDetailPage')),
+    hidden: true,
+  },
 ];

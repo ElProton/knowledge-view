@@ -3,17 +3,17 @@
 /**
  * Interface de base pour tous les documents de la Knowledge Base.
  * Tous les types de documents doivent étendre cette interface.
+ * Utilise un générique pour permettre des types de données spécifiques.
  */
-export interface BaseDocument {
+export interface BaseDocument<TData = Record<string, unknown>> {
   id: string;
   type: string;
-  title: string;
+  title?: string | null;
   created_at: string;
   updated_at: string;
   theme?: string[];
   tags?: string[];
-  data?: Record<string, any>;
-  [key: string]: any;
+  data?: TData;
 }
 
 /**
@@ -25,7 +25,7 @@ export interface ColumnConfig<T extends BaseDocument> {
   /** Label affiché dans l'en-tête de colonne */
   label: string;
   /** Fonction de formatage personnalisée pour la valeur */
-  formatter?: (value: any, item: T) => ReactNode;
+  formatter?: (value: unknown, item: T) => ReactNode;
   /** Indique si la colonne est triable */
   sortable?: boolean;
 }

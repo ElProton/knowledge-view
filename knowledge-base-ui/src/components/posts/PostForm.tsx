@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from 'react';
+﻿import { useState, useEffect, useCallback } from 'react';
 import { PostDocument } from '../../types/document.types';
 import { ResourceFormProps } from '../../types/resource.types';
 import styles from './PostForm.module.css';
@@ -23,6 +23,7 @@ export const PostForm: React.FC<ResourceFormProps<PostDocument>> = ({
   const [content, setContent] = useState(value?.data?.content || '');
   const [postUrl, setPostUrl] = useState('');
 
+  // Synchronisation de l'état local avec la valeur externe
   useEffect(() => {
     if (value) {
       setTitle(value.title || '');
@@ -37,7 +38,8 @@ export const PostForm: React.FC<ResourceFormProps<PostDocument>> = ({
     }
   }, [value]);
 
-  useEffect(() => {
+  // Mémoïsation de la fonction de mise à jour pour éviter les re-renders inutiles
+  const handleFormChange = useCallback(() => {
     const formData: Partial<PostDocument> = {
       title,
       theme: theme.split(',').map((t) => t.trim()).filter(Boolean),
@@ -49,12 +51,17 @@ export const PostForm: React.FC<ResourceFormProps<PostDocument>> = ({
         engagement: value?.data?.engagement || {},
       },
       links: postUrl
-        ? [{ label: 'post', url: postUrl, id: null }]
+        ? [{ label: 'post', url: postUrl }]
         : [],
     };
 
     onChange(formData);
-  }, [title, theme, tags, platform, publishedDate, content, postUrl]);
+  }, [title, theme, tags, platform, publishedDate, content, postUrl, onChange, value?.data?.engagement]);
+
+  // Appel de la fonction mémorisée lors des changements
+  useEffect(() => {
+    handleFormChange();
+  }, [handleFormChange]);
 
   const remainingChars = POST_CONTENT_MAX_LENGTH - content.length;
 

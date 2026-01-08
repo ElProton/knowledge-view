@@ -88,7 +88,8 @@ class ApiClient {
     });
 
     if (response.status === 204) {
-      return undefined as T;
+      // Pour les réponses 204 No Content, retourner void correctement typé
+      return void 0 as T;
     }
 
     return this.handleResponse<T>(response);
