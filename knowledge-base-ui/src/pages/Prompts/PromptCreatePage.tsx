@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+﻿import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { promptService } from '../../services/prompts/promptService';
 import { PromptForm } from '../../components/prompts/PromptForm';

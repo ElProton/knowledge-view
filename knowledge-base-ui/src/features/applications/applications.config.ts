@@ -1,5 +1,5 @@
 ﻿import { ResourceConfig } from '../../types/resource.types';
-import { ApplicationDocument, DocumentType } from '../../types/document.types';
+import { ApplicationDocument, DocumentType, MongoDateValue } from '../../types/document.types';
 import { formatMongoDate } from '../../utils/dataHelpers';
 
 /**
@@ -24,17 +24,17 @@ export const applicationsConfig: ResourceConfig<ApplicationDocument> = {
       {
         key: 'data.status',
         label: 'Statut',
-        formatter: (value) => value?.toUpperCase() || 'N/A',
+        formatter: (value) => (typeof value === 'string' ? value.toUpperCase() : 'N/A'),
       },
       {
         key: 'data.url',
         label: 'URL',
-        formatter: (value) => value || '-',
+        formatter: (value) => String(value || '-'),
       },
       {
         key: 'created_at',
         label: 'Date de création',
-        formatter: (value) => formatMongoDate(value, 'Date inconnue'),
+        formatter: (value) => formatMongoDate(value as MongoDateValue, 'Date inconnue'),
       },
     ],
   },

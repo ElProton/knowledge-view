@@ -6,7 +6,7 @@ export interface SectionConfig {
   path: string;
   icon?: string;
   description?: string;
-  component: LazyExoticComponent<ComponentType<unknown>>;
+  component: LazyExoticComponent<ComponentType>;
   filter?: Record<string, string>;
   disabled?: boolean;
   hidden?: boolean;

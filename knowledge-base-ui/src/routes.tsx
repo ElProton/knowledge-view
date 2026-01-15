@@ -1,6 +1,6 @@
 ﻿import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { useAuth } from './contexts/AuthContext';
+import { useAuth } from './hooks/useAuth';
 import { AppLayout } from './components/layout/AppLayout/AppLayout';
 import { LoginPage } from './pages/Login/LoginPage';
 import { LoadingSpinner } from './components/common/LoadingSpinner/LoadingSpinner';

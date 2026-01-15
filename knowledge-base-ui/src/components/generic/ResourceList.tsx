@@ -126,7 +126,7 @@ export function ResourceList<T extends BaseDocument>({
               onClick={() => handleItemClick(item)}
             >
               {config.list.columns.map((column, index) => {
-                const value = getNestedValue(item, column.key as string);
+                const value = getNestedValue(item as unknown as Record<string, unknown>, column.key as string);
                 const displayValue = column.formatter
                   ? column.formatter(value, item)
                   : value;
@@ -134,7 +134,7 @@ export function ResourceList<T extends BaseDocument>({
                 if (index === 0) {
                   return (
                     <h3 key={column.key as string} className={styles.cardTitle}>
-                      {displayValue}
+                      {String(displayValue)}
                     </h3>
                   );
                 }
@@ -142,7 +142,7 @@ export function ResourceList<T extends BaseDocument>({
                 return (
                   <div key={column.key as string} className={styles.cardMeta}>
                     <span className={styles.metaLabel}>{column.label}:</span>
-                    <span className={styles.metaValue}>{displayValue}</span>
+                    <span className={styles.metaValue}>{String(displayValue ?? '')}</span>
                   </div>
                 );
               })}

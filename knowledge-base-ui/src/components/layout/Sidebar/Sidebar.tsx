@@ -1,7 +1,7 @@
 ﻿import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { sectionsConfig } from '../../../config/sections.config';
-import { useAuth } from '../../../contexts/AuthContext';
+import { useAuth } from '../../../hooks/useAuth';
 import styles from './Sidebar.module.css';
 
 const iconMap: Record<string, string> = {

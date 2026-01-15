@@ -1,5 +1,5 @@
 ﻿import { ResourceConfig } from '../../types/resource.types';
-import { PostDocument, DocumentType } from '../../types/document.types';
+import { PostDocument, DocumentType, MongoDateValue } from '../../types/document.types';
 import { formatMongoDate } from '../../utils/dataHelpers';
 
 /**
@@ -24,12 +24,12 @@ export const postsConfig: ResourceConfig<PostDocument> = {
       {
         key: 'data.platform',
         label: 'Plateforme',
-        formatter: (value) => value || 'Non définie',
+        formatter: (value) => String(value || 'Non définie'),
       },
       {
         key: 'data.published_date',
         label: 'Date de publication',
-        formatter: (value) => formatMongoDate(value, 'Non définie'),
+        formatter: (value) => formatMongoDate(value as MongoDateValue, 'Non définie'),
       },
     ],
   },
