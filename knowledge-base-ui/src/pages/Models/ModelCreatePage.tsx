@@ -27,8 +27,9 @@ export default function ModelCreatePage() {
 
       await modelService.createModel(data);
       navigate('/models');
-    } catch (err: any) {
-      setError(err.message || 'Erreur lors de la création du modèle.');
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Erreur inconnue';
+      setError(errorMessage || 'Erreur lors de la création du modèle.');
     } finally {
       setIsLoading(false);
     }

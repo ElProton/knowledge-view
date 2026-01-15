@@ -1,5 +1,5 @@
-﻿import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+﻿import { useCallback, useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { promptService } from '../../services/prompts/promptService';
 import { PromptForm } from '../../components/prompts/PromptForm';
 import { PromptDocument } from '../../types/document.types';
@@ -9,13 +9,12 @@ import styles from './PromptDetailPage.module.css';
 
 export default function PromptDetailPage() {
   const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
   const [prompt, setPrompt] = useState<PromptDocument | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
 
-  const fetchPrompt = async () => {
+  const fetchPrompt = useCallback(async () => {
     if (!id) return;
     setLoading(true);
     setError(null);
@@ -28,11 +27,11 @@ export default function PromptDetailPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id]);
 
   useEffect(() => {
     fetchPrompt();
-  }, [id]);
+  }, [fetchPrompt]);
 
   const handleSubmit = async (data: Partial<PromptDocument>) => {
     if (!id) return;
@@ -55,8 +54,9 @@ export default function PromptDetailPage() {
       // Let's refresh the data to be sure.
       await fetchPrompt();
       alert('Prompt mis à jour avec succès.');
-    } catch (err: any) {
-      setError(err.message || 'Erreur lors de la mise à jour du prompt.');
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Erreur inconnue';
+      setError(errorMessage || 'Erreur lors de la mise à jour du prompt.');
     } finally {
       setIsSaving(false);
     }

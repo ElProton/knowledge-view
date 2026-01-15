@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from 'react';
+﻿import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { modelService } from '../../services/models/modelService';
 import { ModelDocument } from '../../types/document.types';
@@ -15,7 +15,7 @@ export default function ModelListPage() {
   const [limit, setLimit] = useState(25);
   const [skip, setSkip] = useState(0);
 
-  const fetchModels = async () => {
+  const fetchModels = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
@@ -27,11 +27,11 @@ export default function ModelListPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [limit, skip]);
 
   useEffect(() => {
     fetchModels();
-  }, [limit, skip]);
+  }, [fetchModels]);
 
   const handleNextPage = () => {
     setSkip(skip + limit);

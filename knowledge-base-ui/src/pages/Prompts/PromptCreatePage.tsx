@@ -27,8 +27,9 @@ export default function PromptCreatePage() {
 
       await promptService.createPrompt(data);
       navigate('/prompts');
-    } catch (err: any) {
-      setError(err.message || 'Erreur lors de la création du prompt.');
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Erreur inconnue';
+      setError(errorMessage || 'Erreur lors de la création du prompt.');
     } finally {
       setIsLoading(false);
     }

@@ -1,4 +1,4 @@
-﻿import React, { useEffect, useState } from 'react';
+﻿import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { promptService } from '../../services/prompts/promptService';
 import { PromptDocument } from '../../types/document.types';
@@ -15,7 +15,7 @@ export default function PromptListPage() {
   const [limit, setLimit] = useState(25);
   const [skip, setSkip] = useState(0);
 
-  const fetchPrompts = async () => {
+  const fetchPrompts = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
@@ -27,11 +27,11 @@ export default function PromptListPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [limit, skip]);
 
   useEffect(() => {
     fetchPrompts();
-  }, [limit, skip]);
+  }, [fetchPrompts]);
 
   const handleNextPage = () => {
     setSkip(skip + limit);

@@ -13,7 +13,7 @@ export const PostForm: React.FC<ResourceFormProps<PostDocument>> = ({
   value,
   onChange,
   isEditing = false,
-  isLoading = false,
+  // isLoading = false,
 }) => {
   const [title, setTitle] = useState(value?.title || '');
   const [theme, setTheme] = useState(value?.theme?.join(', ') || '');

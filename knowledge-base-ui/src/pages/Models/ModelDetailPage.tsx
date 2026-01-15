@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from 'react';
+﻿import { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { modelService } from '../../services/models/modelService';
 import { ModelForm } from '../../components/models/ModelForm';
@@ -14,7 +14,7 @@ export default function ModelDetailPage() {
   const [error, setError] = useState<string | null>(null);
   const [isSaving, setIsSaving] = useState(false);
 
-  const fetchModel = async () => {
+  const fetchModel = useCallback(async () => {
     if (!id) return;
     setLoading(true);
     setError(null);
@@ -27,11 +27,11 @@ export default function ModelDetailPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id]);
 
   useEffect(() => {
     fetchModel();
-  }, [id]);
+  }, [fetchModel]);
 
   const handleSubmit = async (data: Partial<ModelDocument>) => {
     if (!id) return;
@@ -42,8 +42,9 @@ export default function ModelDetailPage() {
       await modelService.updateModel(id, data);
       await fetchModel();
       alert('Modèle mis à jour avec succès.');
-    } catch (err: any) {
-      setError(err.message || 'Erreur lors de la mise à jour du modèle.');
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Erreur inconnue';
+      setError(errorMessage || 'Erreur lors de la mise à jour du modèle.');
     } finally {
       setIsSaving(false);
     }

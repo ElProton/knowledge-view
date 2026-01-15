@@ -40,7 +40,7 @@ export const ModelForm: React.FC<ModelFormProps> = ({
     e.preventDefault();
 
     // Valider le JSON avant la soumission
-    let parsedContent: Record<string, any>;
+    let parsedContent: Record<string, unknown>;
     try {
       parsedContent = JSON.parse(jsonText);
       setJsonError(null);

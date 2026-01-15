@@ -1,5 +1,5 @@
 ﻿import { useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { PostDocument } from '../../types/document.types';
 import { ResourceView } from '../../components/generic/ResourceView';
 import { PostForm } from '../../components/posts/PostForm';
@@ -8,7 +8,6 @@ import { postsConfig } from '../../features/posts/posts.config';
 
 export default function PostDetailPage() {
   const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
 
   const { currentItem, loading, error, fetchOne, update, remove } = useResource<PostDocument>(postsConfig);
 
