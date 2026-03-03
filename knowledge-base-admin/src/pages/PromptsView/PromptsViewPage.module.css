@@ -1,0 +1,36 @@
+﻿.placeholder {
+  text-align: center;
+  padding: 3rem;
+  background-color: var(--color-background);
+  border: 2px dashed var(--color-border);
+  border-radius: 8px;
+}
+
+.icon {
+  font-size: 3rem;
+  display: block;
+  margin-bottom: 1rem;
+}
+
+.placeholder h2 {
+  margin: 0 0 0.75rem;
+  font-size: 1.25rem;
+  color: var(--color-text);
+}
+
+.placeholder p {
+  color: var(--color-text-secondary);
+  margin: 0 0 1rem;
+}
+
+.placeholder ul {
+  display: inline-block;
+  text-align: left;
+  color: var(--color-text-secondary);
+  margin: 0;
+  padding-left: 1.5rem;
+}
+
+.placeholder li {
+  margin-bottom: 0.25rem;
+}
